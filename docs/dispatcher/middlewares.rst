@@ -2,44 +2,34 @@
 Middlewares
 ===========
 
-**aiogram** provides powerful mechanism for customizing event handlers via middlewares.
-
-Middlewares in bot framework seems like Middlewares mechanism in web-frameworks
-like `aiohttp <https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-middlewares>`_,
-`fastapi <https://fastapi.tiangolo.com/tutorial/middleware/>`_,
-`Django <https://docs.djangoproject.com/en/3.0/topics/http/middleware/>`_ or etc.)
-with small difference - here is implemented two layers of middlewares (before and after filters).
-
-.. note::
-
-    Middleware is function that triggered on every event received from
-    Telegram Bot API in many points on processing pipeline.
-
-Base theory
-===========
-
-As many books and other literature in internet says:
+**aiogram** provides a powerful mechanism for customizing event handlers via middlewares.
 
    Middleware is reusable software that leverages patterns and frameworks to bridge
    the gap between the functional requirements of applications and the underlying operating systems,
    network protocol stacks, and databases.
 
-Middleware can modify, extend or reject processing event in many places of pipeline.
+Middlewares in aiogram are like those found in web-frameworks
+(`aiohttp <https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-middlewares>`_,
+`fastapi <https://fastapi.tiangolo.com/tutorial/middleware/>`_,
+`Django <https://docs.djangoproject.com/en/3.0/topics/http/middleware/>`_ etc.)
+with a small difference - here we implemented two layers of middlewares (before and after filters).
+
+Middlewares are triggered by every event received from the Telegram Bot API. They can be applied at many points of the processing pipeline to modify, extend, or reject event processing.
 
 Basics
 ======
 
-Middleware instance can be applied for every type of Telegram Event (Update, Message, etc.) in two places
+Middleware instances can be applied to every type of Telegram Event (Update, Message, etc.) in two places:
 
 1. Outer scope - before processing filters (:code:`<router>.<event>.outer_middleware(...)`)
-2. Inner scope - after processing filters but before handler (:code:`<router>.<event>.middleware(...)`)
+2. Inner scope - after processing filters but before the handler (:code:`<router>.<event>.middleware(...)`)
 
 .. image:: ../_static/basics_middleware.png
     :alt: Middleware basics
 
 .. attention::
 
-    Middleware should be subclass of :code:`BaseMiddleware` (:code:`from aiogram import BaseMiddleware`) or any async callable
+    Middleware should be a subclass of :code:`BaseMiddleware` (:code:`from aiogram import BaseMiddleware`) or any async callable
 
 Arguments specification
 =======================
@@ -57,7 +47,7 @@ Examples
 
 .. danger::
 
-    Middleware should always call :code:`await handler(event, data)` to propagate event for next middleware/handler
+    Middleware should always call :code:`await handler(event, data)` to propagate events to the next middleware/handler
 
 
 Class-based
@@ -110,4 +100,4 @@ Facts
 
 1. Middlewares from outer scope will be called on every incoming event
 2. Middlewares from inner scope will be called only when filters pass
-3. Inner middlewares is always calls for :class:`aiogram.types.update.Update` event type in due to all incoming updates going to specific event type handler through built in update handler
+3. Inner middlewares are always called for :class:`aiogram.types.update.Update` event type due to all incoming updates going to a specific event type handler through the built in update handler
